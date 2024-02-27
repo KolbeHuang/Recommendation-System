@@ -35,7 +35,7 @@ has the following meaning:
 ### k-NN
 The essential idea is to find similar users to the target user and recommend based on how they liked the target movie not rated by the target user. This is also taken as k-NN method.
 
-We need Pearson correlation coefficient between user $u$ and $v$: 
+We need Pearson correlation coefficient between user $u$ and $v$:
 $$\text{Pearson}(u,v) = \frac{\sum_{k\in I_u\cap I_v}(r_{uk} - \mu_u)(r_{vk} - \mu_v)}{\sqrt{\sum_{k\in I_u\cap I_v}(r_{uk} - \mu_u)^2}\sqrt{\sum_{k\in I_u\cap I_v}(r_{vk} - \mu_v)^2}}$$
 - $I_u$: the set of item indices for which ratings have been specified by user $u$
 - $I_v$: the set of item indices for which ratings have been specified by user $v$
@@ -43,7 +43,7 @@ $$\text{Pearson}(u,v) = \frac{\sum_{k\in I_u\cap I_v}(r_{uk} - \mu_u)(r_{vk} - \
 - $r_{uk}$: rating for user $u$ for item $k$
 
 Then, the predicted rating of user $u$ for item $j$ is
-$$\hat{r}_{uj} = \mu_{u} + \frac{\sum_{v\in P_u}\text{Pearson}(u,v)(r_{vj} - \mu_v)}{\sum_{v\in P_u}|\text{Pearson}(u,v)|}$$ 
+$$\hat{r}\_{uj} = \mu_u + \frac{\sum_{v\in P_u}\text{Pearson}(u,v)(r_{vj} - \mu_v)}{\sum_{v\in P_u}|\text{Pearson}(u,v)|}$$
 where $P_u$ is the neighbourhood of the target user $u$.
 This prediction simulates the variance of ratings from those users in the target neighbourhood based on the target user’s mean rating.
 
@@ -63,16 +63,16 @@ I explored two variants of the matrix factorization methods.
 ### Non-negative Matrix Factorization (NMF)
 This enforces the constraint $U\geq0, V\geq0$. 
 The prediction of user $i$ on movie $j$ is 
-$$\hat{r}_{ij} = \sum_{s=1}^k u_{is} v_{js}$$
+$$\hat{r}\_{ij} = \sum_{s=1}^k u_{is} v_{js}$$
 
 The advantage is that it provides high interpretability for user-item interactions. With the NMF, we can measure the features of a new item based on its content, brand, … to evaluate its distribution in the latent feature space. Then, we know the predicted ratings from all the users on this new item.
 
 ### Matrix Factorization with bias
-This method adds the L2 regularization and bias for each user and movie. The formulated problem is $$\underset{U,V, b_u, b_i}{\min} \hspace{1ex} \frac{1}{2}\sum_{(i,j)\in S} (r_{ij} - \sum_{s=1}^k u_{is} v_{js})^2 + \frac{\lambda}{2}||U||_F + \frac{\lambda}{2}||V||_F + \frac{\lambda}{2}\sum_{u=1}^m b_u^2 + \frac{\lambda}{2}\sum_{i=1}^n b_i^2$$
+This method adds the L2 regularization and bias for each user and movie. The formulated problem is $$\underset{U,V, b_u, b_i}{\min} \hspace{1ex} \frac{1}{2}\sum_{(i,j)\in S} (r_{ij} - \sum_{s=1}^k u_{is} v_{js})^2 + \frac{\lambda}{2}||U||\_F + \frac{\lambda}{2}||V||\_F + \frac{\lambda}{2}\sum_{u=1}^m b_u^2 + \frac{\lambda}{2}\sum_{i=1}^n b_i^2$$
 where $b_u$ is the bias of user $u$ and $b_i$ is the bias of item $i$.
 
 The prediction of user $i$ on movie $j$ is 
-$$\hat{r}_{ij} = \sum_{s=1}^k u_{is} v_{js} + \mu + b_i + b_j$$
+$$\hat{r}\_{ij} = \sum_{s=1}^k u_{is} v_{js} + \mu + b_i + b_j$$
 
 ## Learning-To-Rank
 In this project, I used the pairwise approach to learn the ranking, where the ranking problem is viewed as a problem of correctly ordering pairs of items and aim to minimize the number of incorrectly ordered pairs.
@@ -85,12 +85,14 @@ Assume for a given query, we have items $x_i, x_j$ with their true relevance sco
 Now, we have a pair of items $(x_i, x_j)$ with scores $(s_i, s_j)$. To calculate the error based on the order of this pair of items, define the loss function $Loss(s_i, s_j)$ by approximating this problem to a binary classification task.
 
 The true probability $P_{ij}$ is defined
-$$P_{ij} = \begin{cases}
-1 &\text{if } y_i > y_j\\
-0 &\text{else}
-\end{cases}$$
+```math
+P_{ij} = \begin{cases}
+1 & \text{if } y_i > y_j\\
+0 & \text{else}
+\end{cases}
+```
 
-The predicted probability $\bar{P}_{ij}$ is computed $$\bar{P}_{ij} = \frac{e^{s_i - s_j}}{1 + e^{s_i - s_j}}$$
+The predicted probability $\bar{P}\_{ij}$ is computed $$\bar{P}_{ij} = \frac{e^{s_i - s_j}}{1 + e^{s_i - s_j}}$$
 
 The loss is defined as the cross-entropy loss between $P_{ij}$ and $\bar{P_{ij}}$
 $$Loss(s_i, s_j) = -[P_{ij}\log \bar{P_{ij}} + (1-P_{ij})\log(1-P_{ij})]$$
