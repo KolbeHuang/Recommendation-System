@@ -102,6 +102,8 @@ In the movie ratings dataset, the average RMSE and MAE are used to evaluate the 
 
 In the WEB10K dataset, the normalized Discounted Cumulative Gain (nDCG) is used to evaluate the performance.
 
+$$DCG@K = \sum_{i=1}^k \frac{rel(i)}{\log_2(i+1)}\quad nDCG@K = \frac{IDCG@K}{DCG@K}$$
+
 # Execution of code
 The notebook can be directly run on Colab. GPU is recommended. Notice that the LTR part requires high RAM resources.
 
